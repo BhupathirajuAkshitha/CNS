@@ -1,0 +1,79 @@
+import java.util.*;
+public class PlayFairCipher {
+ static String removeDuplicate(String s) {
+ int index = 0;
+ char[] c = s.toCharArray();
+ for (int i = 0; i < s.length(); i++) {
+ int j;
+ for (j = 0; j < i; j++) if (c[i] == c[j]) break;
+ if (i == j) c[index++] = c[i];
+ }
+ return new String(Arrays.copyOf(c, index));
+ }
+ static String removeWhiteSpace(char[] ch, String key) {
+ char[] c = key.toCharArray();
+ for (int i = 0; i < c.length; i++)
+ for (char value : ch)
+ if (c[i] == value) c[i] = ' ';
+ return new String(c).replaceAll(" ", "");
+ }
+ static String makePair(String pt) {
+ StringBuilder s = new StringBuilder();
+ for (int i = 0; i < pt.length(); i++) {
+ if (pt.charAt(i) == ' ') continue;
+ s.append(pt.charAt(i));
+ if (i < pt.length() - 1 && pt.charAt(i) == pt.charAt(i + 1)) s.append("x");
+ }
+ if (s.length() % 2 != 0) s.append("x");
+ System.out.print("Processed Plain Text: "+s.toString());
+ return s.toString();
+ }
+ static int[] findIJ(char a, char b, char[][] x) {
+ int[] y = new int[4];
+ if (a == 'j') a = 'i';
+ if (b == 'j') b = 'i';
+ for (int i = 0; i < 5; i++)
+ for (int j = 0; j < 5; j++) {
+ if (x[i][j] == a) { y[0] = i; y[1] = j; }
+ if (x[i][j] == b) { y[2] = i; y[3] = j; }}
+ if (y[0] == y[2]) { y[1]++; y[3]++; }
+ else if (y[1] == y[3]) { y[0]++; y[2]++; }
+ for (int i = 0; i < 4; i++) y[i] %= 5;
+ return y;
+ }
+ static String encrypt(String pt, char[][] x) {
+ char[] ch = pt.toCharArray();
+ for (int i = 0; i < pt.length(); i += 2) {
+ int[] a = findIJ(pt.charAt(i), pt.charAt(i + 1), x);
+ if (a[0] == a[2]) {
+ ch[i] = x[a[0]][a[1]];
+ ch[i + 1] = x[a[0]][a[3]];
+ } else if (a[1] == a[3]) {
+ ch[i] = x[a[0]][a[1]];
+ ch[i + 1] = x[a[2]][a[1]];
+ } else {
+ ch[i] = x[a[0]][a[3]];
+ ch[i + 1] = x[a[2]][a[1]];
+ }
+ }
+ return new String(ch);
+ }
+ public static void main(String[] args) {
+ Scanner sc=new Scanner(System.in);
+ System.out.print("Enter Plain text: ");
+ String pt = sc.nextLine();
+ System.out.print("Enter key: ");
+ String key = removeDuplicate(sc.nextLine());
+ char[] ch = key.toCharArray();
+ String st = "abcdefghiklmnopqrstuvwxyz";
+ st = removeWhiteSpace(ch, st);
+ char[] c = st.toCharArray();
+ char[][] x = new char[5][5];
+ int k = 0, s = 0;
+ for (int i = 0; i < 5; i++)
+ for (int j = 0; j < 5; j++)
+ x[i][j] = (k < key.length()) ? ch[k++] : c[s++];pt = makePair(pt);
+ pt = encrypt(pt, x);
+ System.out.println("\nEncrypted text: "+pt);
+ }
+}
