@@ -1,0 +1,28 @@
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.util.Scanner;
+public class SimpleDES {
+ public static void main(String[] args) throws Exception {
+ Scanner scanner = new Scanner(System.in);
+ System.out.print("Enter message: ");
+ String message = scanner.nextLine();
+ System.out.print("Enter 8-character key: ");
+ String keyStr = scanner.nextLine();
+ if (keyStr.length() != 8) {
+ System.out.println("Key must be exactly 8 characters long.");
+ return;
+ }
+ SecretKeySpec key = new SecretKeySpec(keyStr.getBytes(), "DES");
+ Cipher encryptCipher = Cipher.getInstance("DES");
+ encryptCipher.init(Cipher.ENCRYPT_MODE, key);
+ byte[] encryptedBytes = encryptCipher.doFinal(message.getBytes());
+ String encrypted = Base64.getEncoder().encodeToString(encryptedBytes);
+ System.out.println("Encrypted: " + encrypted);
+ Cipher decryptCipher = Cipher.getInstance("DES");
+ decryptCipher.init(Cipher.DECRYPT_MODE, key);
+ byte[] decryptedBytes = decryptCipher.doFinal(Base64.getDecoder().decode(encrypted));
+ String decrypted = new String(decryptedBytes);
+ System.out.println("Decrypted: " + decrypted);
+ }
+}
