@@ -1,0 +1,55 @@
+import java.util.Scanner;
+public class RowAndColumner {
+ public static String encrypt(String plaintext, int rows, int cols) {
+ char[][] matrix = new char[rows][cols];
+ int k = 0;
+ for (int i = 0; i < rows; i++) {
+ for (int j = 0; j < cols; j++) {
+ if (k < plaintext.length())
+ matrix[i][j] = plaintext.charAt(k++);
+ else
+ matrix[i][j] = 'X'; // padding
+ }
+ }
+ String ciphertext = "";
+ for (int j = 0; j < cols; j++) {
+ for (int i = 0; i < rows; i++) {
+ ciphertext += matrix[i][j]; // concatenate characters
+ }
+ }
+ return ciphertext;
+ }
+ public static String decrypt(String ciphertext, int rows, int cols) {
+ char[][] matrix = new char[rows][cols];
+ int k = 0;
+ for (int j = 0; j < cols; j++) {
+ for (int i = 0; i < rows; i++) {
+ matrix[i][j] = ciphertext.charAt(k++);
+ }
+ }
+ String plaintext = "";
+ for (int i = 0; i < rows; i++) {
+ for (int j = 0; j < cols; j++) {
+ plaintext += matrix[i][j]; // concatenate characters
+ }
+ }
+ return plaintext;
+ }
+ public static void main(String[] args) {
+Scanner sc = new Scanner(System.in);
+ System.out.print("Enter plaintext (no spaces): ");
+ String plaintext = sc.nextLine();
+ System.out.print("Enter number of rows: ");
+ int rows = sc.nextInt();
+ System.out.print("Enter number of columns: ");
+ int cols = sc.nextInt();
+ if (rows * cols < plaintext.length()) {
+ System.out.println("Error: rows*columns should be >= plaintext length");
+ return;
+ }
+ String encrypted = encrypt(plaintext, rows, cols);
+ System.out.println("Encrypted: " + encrypted);
+ String decrypted = decrypt(encrypted, rows, cols);
+ System.out.println("Decrypted: " + decrypted);
+ }
+}
