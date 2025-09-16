@@ -1,0 +1,25 @@
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.security.*;
+import java.util.*;
+import java.util.Base64;
+public class AES {
+ public static void main(String[] args) throws Exception {
+ Scanner scanner = new Scanner(System.in);
+ System.out.print("Enter message to encrypt: ");
+ String input = scanner.nextLine();
+ KeyGenerator kg = KeyGenerator.getInstance("AES");
+ kg.init(128);
+ SecretKey key = kg.generateKey();
+ byte[] ivBytes = new byte[16];
+ new SecureRandom().nextBytes(ivBytes);
+ IvParameterSpec iv = new IvParameterSpec(ivBytes);
+ Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+ cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+ byte[] encrypted = cipher.doFinal(input.getBytes());
+ cipher.init(Cipher.DECRYPT_MODE, key, iv);
+ byte[] decrypted = cipher.doFinal(encrypted);
+ System.out.println("Encrypted (Base64): " + Base64.getEncoder().encodeToString(encrypted));
+ System.out.println("Decrypted: " + new String(decrypted));
+ }
+}
