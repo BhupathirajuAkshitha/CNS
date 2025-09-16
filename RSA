@@ -1,0 +1,30 @@
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+public class SimpleRSA {
+ public static void main(String[] args) {
+ Scanner sc = new Scanner(System.in);
+ BigInteger p = new BigInteger(sc.next()); // prime p
+ BigInteger q = new BigInteger(sc.next()); // prime q
+ BigInteger e = new BigInteger(sc.next()); // public exponent e
+ sc.nextLine(); // consume newline
+ String plaintext = sc.nextLine(); // plaintext
+ BigInteger n = p.multiply(q);
+ BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+ BigInteger d = e.modInverse(phi);
+ List<BigInteger> cipherBlocks = new ArrayList<>();
+ for (byte b : plaintext.getBytes()) {
+ BigInteger m = BigInteger.valueOf(Byte.toUnsignedInt(b));
+ BigInteger c = m.modPow(e, n);
+ cipherBlocks.add(c);
+ }
+ byte[] recovered = new byte[cipherBlocks.size()];
+ for (int i = 0; i < cipherBlocks.size(); i++) {
+ BigInteger c = cipherBlocks.get(i);
+ BigInteger m = c.modPow(d, n);
+ recovered[i] = (byte) m.intValue();
+ }
+ System.out.println(new String(recovered));
+ }
+}
