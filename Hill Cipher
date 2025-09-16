@@ -1,0 +1,57 @@
+import java.util.Scanner;
+public class Hillcipher1 {
+ static int[][] keyMatrix = new int[2][2];
+ static int[][] inverseKey = new int[2][2];
+ public static void main(String[] args) {
+ Scanner scanner = new Scanner(System.in);
+ System.out.println("Enter 4 integers (row-wise) for 2x2 key matrix:");
+ for (int i = 0; i < 2; i++)
+ for (int j = 0; j < 2; j++)
+ keyMatrix[i][j] = scanner.nextInt();
+ if (!calculateInverseKey()) {
+ System.out.println("Key matrix is not invertible modulo 26.");
+ return;
+ }
+ System.out.print("Enter plaintext (A-Z only): ");
+ String plaintext = scanner.next().toUpperCase();
+ if (plaintext.length() % 2 != 0)
+ plaintext += "X";
+ String encrypted = process(plaintext, keyMatrix);
+ System.out.println("Encrypted: " + encrypted);
+ String decrypted = process(encrypted, inverseKey);
+ System.out.println("Decrypted: " + decrypted);
+ }
+ static String process(String text, int[][] matrix) {
+ StringBuilder result = new StringBuilder();
+ for (int i = 0; i < text.length(); i += 2) {
+ int a = text.charAt(i) - 'A';
+ int b = text.charAt(i + 1) - 'A';
+ int x = (matrix[0][0] * a + matrix[0][1] * b) % 26;
+ int y = (matrix[1][0] * a + matrix[1][1] * b) % 26;
+ result.append((char) (x + 'A')).append((char) (y + 'A'));
+ }
+ return result.toString();
+ }
+ static boolean calculateInverseKey() {
+ int a = keyMatrix[0][0];
+ int b = keyMatrix[0][1];
+ int c = keyMatrix[1][0];
+ int d = keyMatrix[1][1];
+ int det = (a * d - b * c) % 26;
+ if (det < 0) det += 26;
+ int detInv = modInverse(det, 26);
+ if (detInv == -1) return false;
+ inverseKey[0][0] = (d * detInv) % 26;
+ inverseKey[0][1] = ((-b + 26) * detInv) % 26;
+ inverseKey[1][0] = ((-c + 26) * detInv) % 26;
+ inverseKey[1][1] = (a * detInv) % 26;
+ return true;
+ }
+ static int modInverse(int a, int m) {
+ a = a % m;
+ for (int x = 1; x < m; x++)
+ if ((a * x) % m == 1)
+ return x;
+ return -1;
+ }
+}
