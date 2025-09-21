@@ -1,0 +1,18 @@
+public class RailFence {
+  static String enc(String t,int r){
+    char[] a=new char[t.length()]; int idx=0;
+    for(int i=0;i<r;i++) for(int j=i;j<t.length();j+=r) a[idx++]=t.charAt(j);
+    return new String(a);
+  }
+  static String dec(String e,int r){
+    char[] a=new char[e.length()]; int idx=0;
+    for(int i=0;i<r;i++) for(int j=i;j<e.length();j+=r) a[j]=e.charAt(idx++);
+    return new String(a);
+  }
+  public static void main(String[] x){
+    String t="HELLOWORLD";
+    String e=enc(t,3), d=dec(e,3);
+    System.out.println("Enc: "+e); 
+    System.out.println("Dec: "+d);
+  }
+}
