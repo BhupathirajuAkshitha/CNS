@@ -1,0 +1,21 @@
+public class Hill {
+  static int[][] k={{3,3},{2,5}}; // key matrix
+  static int[][] ki={{15,17},{20,9}}; // inverse mod 26
+  static String proc(String t,int[][] m){
+    t=t.toUpperCase().replaceAll("[^A-Z]",""); 
+    if(t.length()%2!=0) t+="X";
+    StringBuilder sb=new StringBuilder();
+    for(int i=0;i<t.length();i+=2){
+      int a=t.charAt(i)-'A', b=t.charAt(i+1)-'A';
+      int c=(m[0][0]*a+m[0][1]*b)%26, d=(m[1][0]*a+m[1][1]*b)%26;
+      sb.append((char)(c+'A')).append((char)(d+'A'));
+    }
+    return sb.toString();
+  }
+  public static void main(String[] a){
+    String t="HELLO";
+    String e=proc(t,k), d=proc(e,ki);
+    System.out.println("Enc: "+e); 
+    System.out.println("Dec: "+d);
+  }
+}
