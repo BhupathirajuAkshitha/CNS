@@ -1,0 +1,18 @@
+public class Caesar {
+  static String enc(String t,int k){ 
+    var sb=new StringBuilder();
+    for(char c:t.toCharArray()){
+      if(Character.isLetter(c)){
+        char b=Character.isUpperCase(c)?'A':'a';
+        sb.append((char)(b+(c-b+k)%26));
+      } else sb.append(c);
+    }
+    return sb.toString();
+  }
+  static String dec(String t,int k){ return enc(t,26-k); }
+  public static void main(String[]a){
+    String t="HELLOWORLD";
+    var e=enc(t,3); var d=dec(e,3);
+    System.out.println("Enc: "+e); System.out.println("Dec: "+d);
+  }
+}
